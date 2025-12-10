@@ -3,108 +3,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hello Kitty Trip Planner (Fixed)</title>
-    <!-- 引入 Tailwind CSS -->
+    <title>Kitty Travel App</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 引入 FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
     
-    <style>
-        /* 定義 Hello Kitty 配色 */
-        :root {
-            --kitty-pink: #f4d9de;
-            --kitty-dark: #222629;
-            --kitty-white: #ffffff;
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        kitty: {
+                            bg: '#FFF5F7',
+                            card: '#FFFFFF',    
+                            text: '#5D4037',
+                            pink: '#FF9EAC',
+                            hot: '#FF69B4',
+                            red: '#E60033'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Varela Round', 'Arial', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'kitty-pattern': "url('https://i.pinimg.com/originals/9c/68/73/9c68739a618683e6592209d846567946.png')",
+                    }
+                }
+            }
         }
+    </script>
+    <style>
+        /* 背景設定：使用重複的 Kitty 圖案 */
+        body { 
+            background-color: #fce4ec;
+            background-image: url('https://i.pinimg.com/736x/b2/89/3e/b2893e48810619198647c01a2f605063.jpg'); 
+            background-size: 150px; /* 控制圖案大小 */
+            background-repeat: repeat;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        body {
-            background-color: #fce7f3;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+        /* 玻璃擬態效果，讓卡片浮在圖案上 */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
         }
     </style>
 </head>
-<body>
+<body class="text-kitty-text h-screen flex justify-center overflow-hidden font-sans">
 
-<!-- App 容器 -->
-<div class="w-full max-w-md h-[90vh] bg-[#f4d9de] rounded-3xl shadow-2xl overflow-hidden flex flex-col relative border-4 border-white">
-    
-    <!-- 1. 頭像區域 -->
-    <div class="bg-white pt-10 pb-6 rounded-b-[3rem] shadow-sm flex flex-col items-center z-10">
-        <div class="w-32 h-32 rounded-full p-1 bg-[#f4d9de] mb-3 shadow-inner">
-            <div class="w-full h-full rounded-full bg-white overflow-hidden border-4 border-white flex items-center justify-center">
-                <!-- 這裡嵌入 Base64 圖片，確保一定顯示 -->
-                <img src="image/jpeg;base64,...(這裡會自動填入您的圖片編碼)..." alt="Hello Kitty" class="w-full h-full object-cover">
-            </div>
-        </div>
-        <h1 class="text-2xl font-black text-[#222629] tracking-widest">MY TRIP</h1>
-        <p class="text-xs font-bold text-gray-400 mt-1">HELLO KITTY EDITION</p>
-    </div>
-
-    <!-- 2. 功能按鈕區域 -->
-    <div class="flex-1 px-6 py-6 space-y-4 overflow-y-auto">
+    <!-- 主容器 -->
+    <div id="app" class="w-full max-w-md h-full flex flex-col shadow-2xl relative overflow-hidden border-x-4 border-white glass-effect">
         
-        <!-- 行程按鈕 -->
-        <button class="w-full bg-white rounded-2xl p-5 shadow-sm active:scale-95 transition-transform flex items-center justify-between group cursor-pointer border-2 border-transparent hover:border-white">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full bg-[#f4d9de]/50 flex items-center justify-center text-[#222629]">
-                    <i class="fa-solid fa-map-location-dot text-xl"></i>
-                </div>
-                <div class="text-left">
-                    <h3 class="font-bold text-lg text-[#222629] block">行程規劃</h3>
-                    <p class="text-xs text-gray-500 block">Itinerary</p>
-                </div>
+        <!-- Header -->
+        <header class="bg-kitty-pink px-5 py-3 shadow-md z-10 flex justify-between items-center flex-shrink-0 rounded-b-[2rem]">
+            <div class="flex items-center gap-2">
+                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/0/05/Hello_kitty_character_portrait.png/220px-Hello_kitty_character_portrait.png" 
+                     class="w-10 h-10 object-contain drop-shadow-md bg-white rounded-full p-1" 
+                     alt="Kitty">
+                <h1 class="text-lg font-bold text-white tracking-wide drop-shadow-sm">{{ currentTitle }}</h1>
             </div>
-            <i class="fa-solid fa-chevron-right text-gray-300"></i>
-        </button>
+            <div class="text-[10px] bg-white text-kitty-pink px-3 py-1 rounded-full font-bold shadow-sm">
+                {{ currentDate }}
+            </div>
+        </header>
 
-        <!-- 記帳按鈕 -->
-        <button class="w-full bg-white rounded-2xl p-5 shadow-sm active:scale-95 transition-transform flex items-center justify-between group cursor-pointer border-2 border-transparent hover:border-white">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full bg-[#f4d9de]/50 flex items-center justify-center text-[#222629]">
-                    <i class="fa-solid fa-wallet text-xl"></i>
-                </div>
-                <div class="text-left">
-                    <h3 class="font-bold text-lg text-[#222629] block">旅行記帳</h3>
-                    <p class="text-xs text-gray-500 block">Expenses</p>
-                </div>
-            </div>
-            <i class="fa-solid fa-chevron-right text-gray-300"></i>
-        </button>
+        <!-- Main Content (背景透明，透出底下的圖案) -->
+        <main class="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar pb-24 bg-white/60">
+            
+            <!-- 1. 行程表功能 -->
+            <div v-if="currentTab === 'schedule'" class="space-y-4">
+                <button v-if="!showScheduleForm" @click="showScheduleForm = true" class="w-full py-3 bg-white border-2 border-dashed border-kitty-pink rounded-3xl text-kitty-pink hover:bg-kitty-pink hover:text-white transition flex justify-center items-center gap-2 font-bold shadow-sm">
+                    <i class="ri-add-line text-xl"></i> 添加新行程
+                </button>
 
-        <!-- 購物按鈕 -->
-        <button class="w-full bg-white rounded-2xl p-5 shadow-sm active:scale-95 transition-transform flex items-center justify-between group cursor-pointer border-2 border-transparent hover:border-white">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full bg-[#f4d9de]/50 flex items-center justify-center text-[#222629]">
-                    <i class="fa-solid fa-bag-shopping text-xl"></i>
+                <!-- 表單 -->
+                <div v-if="showScheduleForm" class="bg-white p-5 rounded-3xl shadow-lg border-2 border-kitty-pink relative">
+                    <button @click="showScheduleForm = false" class="absolute top-3 right-3 text-kitty-pink"><i class="ri-close-circle-fill text-2xl"></i></button>
+                    <h3 class="text-center text-kitty-pink font-bold mb-4">✨ New Plan ✨</h3>
+                    <div class="space-y-3">
+                        <div class="flex gap-2">
+                            <input type="time" v-model="newSchedule.time" class="bg-pink-50 rounded-xl p-2 text-sm w-1/3 outline-none text-kitty-text">
+                            <select v-model="newSchedule.weather" class="bg-pink-50 rounded-xl p-2 text-sm flex-1 outline-none text-kitty-text">
+                                <option value="☀️">☀️ 晴天</option>
+                                <option value="🌧️">🌧️ 雨天</option>
+                                <option value="🎀">🎀 逛街</option>
+                            </select>
+                        </div>
+                        <input type="text" v-model="newSchedule.title" placeholder="標題..." class="w-full bg-pink-50 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-kitty-pink">
+                        <input type="text" v-model="newSchedule.location" placeholder="地點 (Google Map)..." class="w-full bg-pink-50 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-kitty-pink">
+                        <button @click="addScheduleItem" class="w-full bg-kitty-pink text-white py-2 rounded-xl font-bold shadow-md hover:bg-kitty-hot transition">加入行程 💖</button>
+                    </div>
                 </div>
-                <div class="text-left">
-                    <h3 class="font-bold text-lg text-[#222629] block">購物清單</h3>
-                    <p class="text-xs text-gray-500 block">Shopping List</p>
+
+                <!-- 列表 -->
+                <div class="space-y-3">
+                    <div v-for="(item, index) in sortedSchedule" :key="index" class="bg-white p-4 rounded-3xl shadow-sm border border-pink-100 relative">
+                        <div class="flex items-start">
+                            <div class="flex flex-col items-center mr-3 bg-pink-50 rounded-2xl py-2 w-14">
+                                <span class="text-xl mb-1">{{ item.weather }}</span>
+                                <span class="text-[10px] font-bold text-kitty-pink">{{ item.time }}</span>
+                            </div>
+                            <div class="flex-1 pt-1">
+                                <h3 class="font-bold text-md text-kitty-text">{{ item.title }}</h3>
+                                <div v-if="item.location" class="flex items-center gap-1 text-xs text-gray-400 mt-1">
+                                    <i class="ri-map-pin-line text-kitty-pink"></i>
+                                    <span>{{ item.location }}</span>
+                                </div>
+                            </div>
+                            <button @click="removeSchedule(index)" class="text-gray-300 hover:text-kitty-red"><i class="ri-delete-bin-line"></i></button>
+                        </div>
+                        
+                        <!-- Map Toggle -->
+                        <div v-if="item.location" class="mt-2">
+                            <button @click="item.showMap = !item.showMap" class="w-full text-xs text-kitty-pink bg-pink-50 py-1 rounded-lg font-bold">
+                                {{ item.showMap ? '收起地圖' : '📍 查看地圖' }}
+                            </button>
+                            <div v-if="item.showMap" class="mt-2 h-40 rounded-xl overflow-hidden shadow-inner border-2 border-pink-100">
+                                <iframe width="100%" height="100%" frameborder="0" style="border:0" :src="getMapUrl(item.location)" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <i class="fa-solid fa-chevron-right text-gray-300"></i>
-        </button>
+
+            <!-- 2. 地圖 -->
+            <div v-if="currentTab === 'map'" class="h-full bg-white rounded-3xl overflow-hidden shadow-lg border-4 border-white relative min-h-[500px]">
+                <iframe width="100%" height="100%" frameborder="0" scrolling="no" src="https://maps.google.com/maps?q=Tokyo&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
+                <div class="absolute top-4 left-4 bg-white px-3 py-1 rounded-full shadow-lg text-kitty-pink font-bold border-2 border-kitty-pink text-xs">
+                    📍 Kitty Map
+                </div>
+            </div>
+
+            <!-- 3. 記帳 -->
+            <div v-if="currentTab === 'finance'" class="space-y-4">
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-pink-100">
+                    <div class="mb-3">
+                        <label class="text-xs text-kitty-pink font-bold ml-1">金額 $$$</label>
+                        <input type="number" v-model="newExpense.amount" placeholder="0.00" class="w-full text-3xl font-bold text-kitty-text border-b-2 border-pink-100 outline-none focus:border-kitty-pink pb-1 bg-transparent">
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-xs text-kitty-pink font-bold ml-1">項目</label>
+                        <input type="text" v-model="newExpense.desc" placeholder="買了什麼..." class="w-full text-sm border-b-2 border-pink-100 outline-none focus:border-kitty-pink pb-1 bg-transparent">
+                    </div>
+                    <div class="flex gap-2">
+                        <select v-model="newExpense.type" class="bg-pink-50 text-sm p-2 rounded-xl outline-none text-kitty-text font-bold">
+                            <option value="信用卡">💳 信用卡</option>
+                            <option value="現金">💵 現金</option>
+                        </select>
+                        <button @click="addExpense" class="flex-1 bg-kitty-pink text-white rounded-xl text-sm font-bold shadow-md hover:bg-kitty-hot">記帳</button>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between items-end px-2">
+                        <h3 class="text-xs font-bold text-gray-500 bg-white/50 px-2 rounded">Spending Log</h3>
+                        <span class="text-kitty-red font-bold bg-white/50 px-2 rounded">Total: ${{ totalExpense }}</span>
+                    </div>
+                    <div v-for="(exp, index) in expenses" :key="index" class="bg-white p-3 rounded-2xl flex justify-between items-center shadow-sm border border-pink-50">
+                        <div class="flex items-center gap-3">
+                            <div :class="exp.type === '信用卡' ? 'bg-blue-100 text-blue-500' : 'bg-green-100 text-green-500'" class="w-8 h-8 rounded-full flex items-center justify-center">
+                                <i :class="exp.type === '信用卡' ? 'ri-bank-card-fill' : 'ri-money-dollar-circle-fill'"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-kitty-text">{{ exp.desc }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-kitty-text text-sm">-${{ exp.amount }}</span>
+                            <button @click="removeExpense(index)" class="text-gray-300 hover:text-kitty-red"><i class="ri-delete-bin-line"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 購物 (圖標修復) -->
+            <div v-if="currentTab === 'shopping'" class="space-y-3">
+                <div class="bg-white p-2 rounded-full shadow-sm flex items-center px-4 border-2 border-kitty-pink">
+                    <input v-model="newShoppingItem" @keyup.enter="addShoppingItem" type="text" placeholder="想買的東西..." class="flex-1 bg-transparent outline-none text-sm text-kitty-text">
+                    <button @click="addShoppingItem" class="text-kitty-pink hover:text-kitty-hot"><i class="ri-add-circle-fill text-3xl"></i></button>
+                </div>
+                <div class="space-y-2 mt-4">
+                    <div v-for="(item, index) in shoppingList" :key="index" class="flex items-center p-3 bg-white rounded-2xl shadow-sm border hover:border-pink-200 transition-all" :class="{'opacity-60': item.checked}">
+                        <div @click="item.checked = !item.checked" class="cursor-pointer mr-3 text-2xl text-kitty-pink">
+                            <i :class="item.checked ? 'ri-checkbox-circle-fill text-gray-300' : 'ri-heart-fill'"></i>
+                        </div>
+                        <span :class="{'line-through text-gray-400': item.checked}" class="flex-1 text-sm font-medium">{{ item.name }}</span>
+                        <button @click="removeShoppingItem(index)" class="text-gray-300 hover:text-kitty-red"><i class="ri-close-line"></i></button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Navigation (圖標修復) -->
+        <nav class="bg-white rounded-t-[2rem] absolute bottom-0 w-full shadow-[0_-5px_20px_rgba(255,182,193,0.4)] z-50">
+            <div class="grid grid-cols-4 w-full h-20 items-center">
+                <button v-for="tab in tabs" :key="tab.id" 
+                        @click="currentTab = tab.id" 
+                        class="flex flex-col items-center justify-center gap-1 h-full w-full transition-all duration-300 relative group">
+                    
+                    <div v-if="currentTab === tab.id" 
+                         class="absolute top-2 w-12 h-12 bg-pink-100 rounded-full -z-10 animate-pulse"></div>
+
+                    <i :class="tab.icon" class="text-2xl transition-transform duration-300"
+                       :class="currentTab === tab.id ? 'text-kitty-hot scale-110 -translate-y-1' : 'text-gray-300 group-hover:text-pink-300'"></i>
+                    
+                    <span class="text-[10px] font-bold"
+                          :class="currentTab === tab.id ? 'text-kitty-hot' : 'text-gray-400'">
+                        {{ tab.name }}
+                    </span>
+                </button>
+            </div>
+        </nav>
     </div>
 
-    <!-- 3. 底部導航 -->
-    <div class="bg-white px-6 py-4 rounded-t-[2.5rem] shadow-lg z-20">
-        <div class="flex justify-around items-center text-[#222629]">
-            <i class="fa-solid fa-house text-xl cursor-pointer hover:text-pink-400"></i>
-            <i class="fa-solid fa-heart text-xl text-gray-300 cursor-pointer hover:text-pink-400"></i>
-            <div class="relative -top-6">
-                <div class="w-14 h-14 bg-[#222629] rounded-full flex items-center justify-center text-white border-4 border-[#f4d9de] shadow-lg cursor-pointer active:scale-90 transition-transform">
-                    <i class="fa-solid fa-plus text-xl"></i>
-                </div>
-            </div>
-            <i class="fa-solid fa-bell text-xl text-gray-300 cursor-pointer hover:text-pink-400"></i>
-            <i class="fa-solid fa-user text-xl text-gray-300 cursor-pointer hover:text-pink-400"></i>
-        </div>
-    </div>
-</div>
+    <script>
+        const { createApp, ref, computed } = Vue;
 
+        createApp({
+            setup() {
+                const currentTab = ref('schedule');
+                const currentDate = new Date().toLocaleDateString('zh-HK');
+                
+                // 這裡更換了最穩定的圖標名稱
+                const tabs = [
+                    { id: 'schedule', name: '行程', icon: 'ri-calendar-todo-fill' },
+                    { id: 'map', name: '地圖', icon: 'ri-map-pin-user-fill' },
+                    { id: 'finance', name: '記帳', icon: 'ri-wallet-3-fill' },
+                    { id: 'shopping', name: '購物', icon: 'ri-shopping-basket-fill' } // 改用 basket 圖標，通常更穩定
+                ];
+
+                const currentTitle = computed(() => {
+                    const tab = tabs.find(t => t.id === currentTab.value);
+                    return tab ? tab.name : 'Kitty App';
+                });
+
+                // Schedule
+                const schedule = ref([
+                    { time: '10:00', title: 'Sanrio Puroland', location: 'Sanrio Puroland Tokyo', weather: '🎀', showMap: false }
+                ]);
+                const showScheduleForm = ref(false);
+                const newSchedule = ref({ time: '', title: '', location: '', weather: '☀️' });
+                const sortedSchedule = computed(() => [...schedule.value].sort((a, b) => a.time.localeCompare(b.time)));
+                const getMapUrl = (loc) => `https://maps.google.com/maps?q=${encodeURIComponent(loc)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+                const addScheduleItem = () => {
+                    if (!newSchedule.value.time || !newSchedule.value.title) return;
+                    schedule.value.push({ ...newSchedule.value, showMap: false });
+                    newSchedule.value = { time: '', title: '', location: '', weather: '☀️' };
+                    showScheduleForm.value = false;
+                };
+                const removeSchedule = (index) => {
+                    const item = sortedSchedule.value[index];
+                    const idx = schedule.value.indexOf(item);
+                    if (idx > -1) schedule.value.splice(idx, 1);
+                };
+
+                // Finance
+                const expenses = ref([{ desc: '可愛髮夾', amount: 120, type: '現金' }]);
+                const newExpense = ref({ amount: '', desc: '', type: '信用卡' });
+                const totalExpense = computed(() => expenses.value.reduce((s, i) => s + Number(i.amount), 0));
+                const addExpense = () => {
+                    if (!newExpense.value.amount || !newExpense.value.desc) return;
+                    expenses.value.unshift({ ...newExpense.value });
+                    newExpense.value.amount = ''; newExpense.value.desc = '';
+                };
+                const removeExpense = (index) => expenses.value.splice(index, 1);
+
+                // Shopping
+                const shoppingList = ref([{ name: 'Kitty 限量娃娃', checked: false }]);
+                const newShoppingItem = ref('');
+                const addShoppingItem = () => {
+                    if (!newShoppingItem.value) return;
+                    shoppingList.value.push({ name: newShoppingItem.value, checked: false });
+                    newShoppingItem.value = '';
+                };
+                const removeShoppingItem = (index) => shoppingList.value.splice(index, 1);
+
+                return {
+                    currentTab, tabs, currentTitle, currentDate,
+                    sortedSchedule, showScheduleForm, newSchedule, addScheduleItem, removeSchedule, getMapUrl,
+                    expenses, newExpense, addExpense, removeExpense, totalExpense,
+                    shoppingList, newShoppingItem, addShoppingItem, removeShoppingItem
+                };
+            }
+        }).mount('#app');
+    </script>
 </body>
 </html>
