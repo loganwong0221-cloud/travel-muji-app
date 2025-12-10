@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kitty Travel App</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Vue.js 3 -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Remix Icons -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
     
     <script>
@@ -16,9 +20,9 @@
                     colors: {
                         kitty: {
                             bg: '#FFF5F7',
-                            text: '#5D4037',
                             pink: '#FF9EAC',
                             hot: '#FF69B4',
+                            text: '#5D4037',
                             red: '#E60033'
                         }
                     },
@@ -30,59 +34,90 @@
         }
     </script>
     <style>
-        /* 保證顯示的可愛圓點背景 (CSS繪製，無需圖片) */
+        /* 1. Hello Kitty 背景圖案 (使用 Base64 或穩定圖床) */
         body {
             background-color: #fff0f5;
-            background-image: radial-gradient(#ffb7c5 15%, transparent 16%), radial-gradient(#ffb7c5 15%, transparent 16%);
-            background-size: 30px 30px;
-            background-position: 0 0, 15px 15px;
+            /* 這裡使用一張穩定的 Kitty 平鋪圖 */
+            background-image: url('https://i.pinimg.com/736x/2b/23/34/2b2334ccb807eb44365317b252037920.jpg');
+            background-size: 100px; /* 調整圖案大小 */
+            background-repeat: repeat;
         }
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(4px);
-        }
+        /* 隱藏滾動條 */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* 玻璃質感，讓文字在背景上清晰可見 */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(5px);
+        }
     </style>
 </head>
-<body class="text-kitty-text h-screen flex justify-center overflow-hidden font-sans">
+<body class="text-kitty-text h-screen w-screen flex justify-center overflow-hidden font-sans">
 
-    <div id="app" class="w-full max-w-md h-full flex flex-col shadow-2xl relative overflow-hidden border-x-4 border-white glass-effect">
+    <!-- 主 App 容器 -->
+    <div id="app" class="w-full max-w-md h-full flex flex-col relative shadow-2xl glass-panel">
         
-        <!-- Header -->
-        <header class="bg-kitty-pink px-5 py-3 shadow-md z-10 flex justify-between items-center flex-shrink-0 rounded-b-[2rem]">
+        <!-- Header (頂部) -->
+        <header class="bg-kitty-pink px-4 py-3 shadow-md z-20 flex justify-between items-center shrink-0 rounded-b-3xl">
             <div class="flex items-center gap-2">
-                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/0/05/Hello_kitty_character_portrait.png/220px-Hello_kitty_character_portrait.png" 
-                     class="w-10 h-10 object-contain drop-shadow-md bg-white rounded-full p-1" 
-                     alt="Kitty">
-                <h1 class="text-lg font-bold text-white tracking-wide drop-shadow-sm">{{ currentTitle }}</h1>
+                <!-- Kitty Icon -->
+                <div class="w-10 h-10 bg-white rounded-full p-1 shadow-sm overflow-hidden flex items-center justify-center">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/0/05/Hello_kitty_character_portrait.png/220px-Hello_kitty_character_portrait.png" 
+                         class="w-full h-full object-contain" alt="Kitty">
+                </div>
+                <h1 class="text-lg font-bold text-white drop-shadow-md">{{ currentTitle }}</h1>
             </div>
-            <div class="text-[10px] bg-white text-kitty-pink px-3 py-1 rounded-full font-bold shadow-sm">
+            <div class="bg-white/90 text-kitty-pink text-xs font-bold px-3 py-1 rounded-full shadow-sm">
                 {{ currentDate }}
             </div>
         </header>
 
-        <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar pb-24 bg-white/40">
+        <!-- Main Content (中間內容區) -->
+        <main class="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar pb-24">
             
-            <!-- 1. 行程表功能 (含自動天氣) -->
+            <!-- 1. 行程表 (Schedule) -->
             <div v-if="currentTab === 'schedule'" class="space-y-4">
-                <button v-if="!showScheduleForm" @click="showScheduleForm = true" class="w-full py-3 bg-white border-2 border-dashed border-kitty-pink rounded-3xl text-kitty-pink hover:bg-kitty-pink hover:text-white transition flex justify-center items-center gap-2 font-bold shadow-sm">
+                <button v-if="!showScheduleForm" @click="showScheduleForm = true" class="w-full py-3 bg-white border-2 border-dashed border-kitty-pink rounded-3xl text-kitty-pink font-bold shadow-sm hover:bg-pink-50 transition flex justify-center items-center gap-2">
                     <i class="ri-add-line text-xl"></i> 添加新行程
                 </button>
 
-                <!-- 新增行程表單 -->
-                <div v-if="showScheduleForm" class="bg-white p-5 rounded-3xl shadow-lg border-2 border-kitty-pink relative">
-                    <button @click="showScheduleForm = false" class="absolute top-3 right-3 text-kitty-pink"><i class="ri-close-circle-fill text-2xl"></i></button>
-                    <h3 class="text-center text-kitty-pink font-bold mb-4">✨ New Plan ✨</h3>
+                <!-- 新增表單 -->
+                <div v-if="showScheduleForm" class="bg-white p-5 rounded-3xl shadow-lg border-2 border-kitty-pink relative animate-fade-in-down">
+                    <button @click="showScheduleForm = false" class="absolute top-3 right-3 text-gray-400 hover:text-kitty-red"><i class="ri-close-circle-fill text-2xl"></i></button>
+                    <h3 class="text-center text-kitty-hot font-bold mb-3">✨ New Plan ✨</h3>
                     
                     <div class="space-y-3">
-                        <input type="text" v-model="newSchedule.title" placeholder="要做什麼呢？" class="w-full bg-pink-50 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-kitty-pink">
+                        <input type="text" v-model="newSchedule.title" placeholder="要做什麼呢？" class="w-full bg-pink-50 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-kitty-hot">
                         
-                        <!-- 地點輸入 (觸發天氣查詢) -->
+                        <!-- 地點與自動天氣 -->
                         <div class="relative">
-                            <input type="text" v-model="newSchedule.location" @change="fetchWeather" placeholder="地點 (英文, 例: Tokyo)" class="w-full bg-pink-50 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-kitty-pink">
+                            <input type="text" v-model="newSchedule.location" @change="fetchWeather" placeholder="地點 (英文, 例: Tokyo)" class="w-full bg-pink-50 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-kitty-hot">
                             <i class="ri-search-line absolute right-3 top-3 text-gray-400"></i>
                         </div>
 
-                        <div class
+                        <div class="flex gap-2">
+                            <input type="time" v-model="newSchedule.time" class="bg-pink-50 rounded-xl p-2 text-sm w-1/3 outline-none">
+                            <div class="flex-1 bg-pink-50 rounded-xl p-2 flex items-center justify-center text-sm text-gray-500">
+                                <span v-if="isLoadingWeather">查詢中...</span>
+                                <span v-else class="text-lg">{{ newSchedule.weather }}</span>
+                            </div>
+                        </div>
+
+                        <div v-if="weatherInfo" class="text-xs text-center text-kitty-hot font-bold">{{ weatherInfo }}</div>
+
+                        <button @click="addScheduleItem" class="w-full bg-kitty-hot text-white py-2 rounded-xl font-bold shadow-md hover:bg-kitty-red transition">加入行程 💖</button>
+                    </div>
+                </div>
+
+                <!-- 列表 -->
+                <div class="space-y-3">
+                    <div v-for="(item, index) in sortedSchedule" :key="index" class="bg-white p-4 rounded-3xl shadow-sm border border-pink-100 relative">
+                        <div class="flex items-start">
+                            <div class="flex flex-col items-center mr-3 bg-pink-50 rounded-2xl py-2 w-14 shrink-0">
+                                <span class="text-2xl mb-1">{{ item.weather }}</span>
+                                <span class="text-[10px] font-bold text-kitty-hot">{{ item.time }}</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-bold text-kitty-text truncate">{{ item.title }}</h3>
+                                <div v-if="item.location" class="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                                    <i class="ri-map-pin-line text-kitty-
