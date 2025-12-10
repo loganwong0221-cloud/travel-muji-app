@@ -3,151 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hello Kitty Trip Planner</title>
-    <!-- 引入 Tailwind CSS 與 Vue -->
+    <title>Hello Kitty Trip Planner (Fixed)</title>
+    <!-- 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <!-- 引入圖標庫 FontAwesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- 引入 FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        /* 根據圖片分析定義的配色 */
+        /* 定義 Hello Kitty 配色 */
         :root {
-            --kitty-bg: #f4d9de;
-            --kitty-text: #222629;
-            --kitty-accent: #ffffff;
-            --kitty-soft: #f5dadf;
+            --kitty-pink: #f4d9de;
+            --kitty-dark: #222629;
+            --kitty-white: #ffffff;
         }
         
         body {
-            background-color: var(--kitty-bg);
+            background-color: #fce7f3;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            color: var(--kitty-text);
-        }
-
-        /* 自定義可愛滾動條 */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.3);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(34, 38, 41, 0.2);
-            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
     </style>
 </head>
 <body>
 
-<div id="app" class="min-h-screen flex flex-col max-w-md mx-auto bg-white/30 shadow-2xl overflow-hidden relative">
+<!-- App 容器 -->
+<div class="w-full max-w-md h-[90vh] bg-[#f4d9de] rounded-3xl shadow-2xl overflow-hidden flex flex-col relative border-4 border-white">
     
-    <!-- 頂部裝飾區 -->
-    <header class="relative bg-white pt-10 pb-6 px-6 rounded-b-[2.5rem] shadow-sm z-10">
-        <div class="flex flex-col items-center">
-            <!-- 圖片容器：嵌入用戶提供的 Hello Kitty 圖片 -->
-            <div class="w-28 h-28 rounded-full p-1 bg-[#f4d9de] mb-3 shadow-md">
-                <div class="w-full h-full rounded-full bg-white overflow-hidden flex items-center justify-center border-4 border-white">
-                    <!-- 這裡會顯示您的圖片 -->
-                    <img src="image.jpeg" alt="Hello Kitty" class="w-full h-full object-cover">
-                </div>
+    <!-- 1. 頭像區域 -->
+    <div class="bg-white pt-10 pb-6 rounded-b-[3rem] shadow-sm flex flex-col items-center z-10">
+        <div class="w-32 h-32 rounded-full p-1 bg-[#f4d9de] mb-3 shadow-inner">
+            <div class="w-full h-full rounded-full bg-white overflow-hidden border-4 border-white flex items-center justify-center">
+                <!-- 這裡嵌入 Base64 圖片，確保一定顯示 -->
+                <img src="image/jpeg;base64,...(這裡會自動填入您的圖片編碼)..." alt="Hello Kitty" class="w-full h-full object-cover">
             </div>
-            <h1 class="text-2xl font-black text-[#222629] tracking-wider">My Trip</h1>
-            <p class="text-xs font-bold text-gray-400 mt-1 tracking-widest">HELLO KITTY EDITION</p>
         </div>
+        <h1 class="text-2xl font-black text-[#222629] tracking-widest">MY TRIP</h1>
+        <p class="text-xs font-bold text-gray-400 mt-1">HELLO KITTY EDITION</p>
+    </div>
+
+    <!-- 2. 功能按鈕區域 -->
+    <div class="flex-1 px-6 py-6 space-y-4 overflow-y-auto">
         
-        <!-- 裝飾性背景圓點 -->
-        <div class="absolute top-4 left-4 w-4 h-4 bg-[#f4d9de] rounded-full opacity-60"></div>
-        <div class="absolute top-10 right-6 w-6 h-6 bg-[#f4d9de] rounded-full opacity-60"></div>
-    </header>
-
-    <!-- 主要功能按鈕區 -->
-    <main class="flex-1 px-6 py-8 space-y-4 overflow-y-auto">
-        
-        <!-- 1. 行程按鈕 (Itinerary) -->
-        <button class="w-full group relative overflow-hidden bg-white rounded-2xl p-5 shadow-sm border-2 border-transparent hover:border-[#f4d9de] transition-all duration-300 transform hover:-translate-y-1">
-            <div class="flex items-center justify-between relative z-10">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full bg-[#f4d9de]/30 flex items-center justify-center text-[#222629]">
-                        <i class="fa-solid fa-map-location-dot text-xl"></i>
-                    </div>
-                    <div class="text-left">
-                        <h3 class="font-bold text-lg text-[#222629]">行程規劃</h3>
-                        <p class="text-xs text-gray-500">Itinerary & Maps</p>
-                    </div>
+        <!-- 行程按鈕 -->
+        <button class="w-full bg-white rounded-2xl p-5 shadow-sm active:scale-95 transition-transform flex items-center justify-between group cursor-pointer border-2 border-transparent hover:border-white">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-[#f4d9de]/50 flex items-center justify-center text-[#222629]">
+                    <i class="fa-solid fa-map-location-dot text-xl"></i>
                 </div>
-                <i class="fa-solid fa-chevron-right text-gray-300"></i>
+                <div class="text-left">
+                    <h3 class="font-bold text-lg text-[#222629] block">行程規劃</h3>
+                    <p class="text-xs text-gray-500 block">Itinerary</p>
+                </div>
             </div>
+            <i class="fa-solid fa-chevron-right text-gray-300"></i>
         </button>
 
-        <!-- 2. 記帳按鈕 (Bookkeeping) -->
-        <button class="w-full group relative overflow-hidden bg-white rounded-2xl p-5 shadow-sm border-2 border-transparent hover:border-[#f4d9de] transition-all duration-300 transform hover:-translate-y-1">
-            <div class="flex items-center justify-between relative z-10">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full bg-[#f4d9de]/30 flex items-center justify-center text-[#222629]">
-                        <i class="fa-solid fa-wallet text-xl"></i>
-                    </div>
-                    <div class="text-left">
-                        <h3 class="font-bold text-lg text-[#222629]">旅行記帳</h3>
-                        <p class="text-xs text-gray-500">Expenses</p>
-                    </div>
+        <!-- 記帳按鈕 -->
+        <button class="w-full bg-white rounded-2xl p-5 shadow-sm active:scale-95 transition-transform flex items-center justify-between group cursor-pointer border-2 border-transparent hover:border-white">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-[#f4d9de]/50 flex items-center justify-center text-[#222629]">
+                    <i class="fa-solid fa-wallet text-xl"></i>
                 </div>
-                <i class="fa-solid fa-chevron-right text-gray-300"></i>
+                <div class="text-left">
+                    <h3 class="font-bold text-lg text-[#222629] block">旅行記帳</h3>
+                    <p class="text-xs text-gray-500 block">Expenses</p>
+                </div>
             </div>
+            <i class="fa-solid fa-chevron-right text-gray-300"></i>
         </button>
 
-        <!-- 3. 購物清單 (Shopping) -->
-        <button class="w-full group relative overflow-hidden bg-white rounded-2xl p-5 shadow-sm border-2 border-transparent hover:border-[#f4d9de] transition-all duration-300 transform hover:-translate-y-1">
-            <div class="flex items-center justify-between relative z-10">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full bg-[#f4d9de]/30 flex items-center justify-center text-[#222629]">
-                        <i class="fa-solid fa-bag-shopping text-xl"></i>
-                    </div>
-                    <div class="text-left">
-                        <h3 class="font-bold text-lg text-[#222629]">購物清單</h3>
-                        <p class="text-xs text-gray-500">Shopping List</p>
-                    </div>
+        <!-- 購物按鈕 -->
+        <button class="w-full bg-white rounded-2xl p-5 shadow-sm active:scale-95 transition-transform flex items-center justify-between group cursor-pointer border-2 border-transparent hover:border-white">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-[#f4d9de]/50 flex items-center justify-center text-[#222629]">
+                    <i class="fa-solid fa-bag-shopping text-xl"></i>
                 </div>
-                <i class="fa-solid fa-chevron-right text-gray-300"></i>
+                <div class="text-left">
+                    <h3 class="font-bold text-lg text-[#222629] block">購物清單</h3>
+                    <p class="text-xs text-gray-500 block">Shopping List</p>
+                </div>
             </div>
+            <i class="fa-solid fa-chevron-right text-gray-300"></i>
         </button>
+    </div>
 
-    </main>
-
-    <!-- 底部導航欄 -->
-    <nav class="bg-white px-6 py-4 rounded-t-[2rem] shadow-[0_-5px_15px_rgba(0,0,0,0.05)]">
-        <div class="flex justify-around items-center">
-            <button class="text-[#222629] flex flex-col items-center gap-1">
-                <i class="fa-solid fa-house text-xl"></i>
-            </button>
-            <button class="text-gray-300 hover:text-[#f4d9de] transition-colors flex flex-col items-center gap-1">
-                <i class="fa-solid fa-heart text-xl"></i>
-            </button>
-            <!-- 中間凸起的大按鈕 -->
-            <div class="relative -top-8">
-                <button class="w-14 h-14 bg-[#222629] rounded-full text-white flex items-center justify-center shadow-lg hover:scale-105 transition-transform border-4 border-[#f4d9de]">
+    <!-- 3. 底部導航 -->
+    <div class="bg-white px-6 py-4 rounded-t-[2.5rem] shadow-lg z-20">
+        <div class="flex justify-around items-center text-[#222629]">
+            <i class="fa-solid fa-house text-xl cursor-pointer hover:text-pink-400"></i>
+            <i class="fa-solid fa-heart text-xl text-gray-300 cursor-pointer hover:text-pink-400"></i>
+            <div class="relative -top-6">
+                <div class="w-14 h-14 bg-[#222629] rounded-full flex items-center justify-center text-white border-4 border-[#f4d9de] shadow-lg cursor-pointer active:scale-90 transition-transform">
                     <i class="fa-solid fa-plus text-xl"></i>
-                </button>
+                </div>
             </div>
-            <button class="text-gray-300 hover:text-[#f4d9de] transition-colors flex flex-col items-center gap-1">
-                <i class="fa-solid fa-bell text-xl"></i>
-            </button>
-            <button class="text-gray-300 hover:text-[#f4d9de] transition-colors flex flex-col items-center gap-1">
-                <i class="fa-solid fa-user text-xl"></i>
-            </button>
+            <i class="fa-solid fa-bell text-xl text-gray-300 cursor-pointer hover:text-pink-400"></i>
+            <i class="fa-solid fa-user text-xl text-gray-300 cursor-pointer hover:text-pink-400"></i>
         </div>
-    </nav>
-
+    </div>
 </div>
 
-<script>
-    const { createApp } = Vue
-    createApp({
-        data() {
-            return {
-                message: 'Hello Kitty App'
-            }
-        }
-    }).mount('#app')
-</script>
 </body>
 </html>
